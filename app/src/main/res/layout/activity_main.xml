@@ -1,82 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#f5f5f5">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="Мои заметки"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
 
-        <!-- Заголовок -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Скалярное произведение векторов"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="24dp"
-            android:textColor="#333333" />
+    <Button
+        android:id="@+id/btnCreateNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Создать новую заметку"
+        android:layout_marginBottom="16dp" />
 
-        <!-- Блок входных данных -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Входные данные:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewNotes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/inputTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/input_background"
-            android:padding="16dp"
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp" />
-
-        <!-- НОВАЯ КНОПКА - генерация векторов -->
-        <Button
-            android:id="@+id/generateButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Сгенерировать новые векторы"
-            android:textSize="16sp"
-            android:backgroundTint="#4CAF50"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Существующая кнопка вычисления -->
-        <Button
-            android:id="@+id/calculateButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Вычислить скалярное произведение"
-            android:textSize="16sp"
-            android:backgroundTint="#2196F3"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Блок результатов -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Результаты:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/resultTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/result_background"
-            android:padding="16dp"
-            android:textSize="14sp" />
-
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>

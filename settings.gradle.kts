@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "VectorCalculator"
+rootProject.name = "NoteApp"
 include(":app")

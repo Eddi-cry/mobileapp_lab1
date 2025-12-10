@@ -1,4 +1,4 @@
-package com.example.vectorapp
+package com.example.noteapp
 
 import org.junit.Test
 
