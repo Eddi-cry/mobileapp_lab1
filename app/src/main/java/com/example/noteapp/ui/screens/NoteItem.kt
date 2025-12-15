@@ -1,17 +1,23 @@
 package com.example.noteapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.noteapp.data.Note
-import java.text.SimpleDateFormat
-import java.util.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun NoteItem(
@@ -19,76 +25,122 @@ fun NoteItem(
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit
 ) {
+    val noteColor = Color(android.graphics.Color.parseColor(note.color))
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable { onEditClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = noteColor.copy(alpha = 0.15f),
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(8.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
-            // Заголовок и кнопка удаления в одной строке
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clip(CircleShape)
+                        .background(noteColor)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Icon(
+                    imageVector = Icons.Default.Note,
+                    contentDescription = "Note",
+                    modifier = Modifier.size(20.dp),
+                    tint = noteColor
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = note.title,
                     style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
+
                 IconButton(
                     onClick = onDeleteClick,
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Удалить заметку",
+                        imageVector = Icons.Default.DeleteOutline,
+                        contentDescription = "Delete",
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
             }
 
-            // Содержание заметки
+            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
-                text = note.content.take(100) + if (note.content.length > 100) "..." else "",
+                text = note.content,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 4.dp)
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+                lineHeight = 20.sp
             )
 
-            // Дата и время
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = formatDate(note.createdAt),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            Spacer(modifier = Modifier.height(12.dp))
 
-                // Если дата обновления отличается от даты создания, показываем её
-                if (note.updatedAt.time != note.createdAt.time) {
-                    Text(
-                        text = "изм: ${formatDate(note.updatedAt)}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Schedule,
+                        contentDescription = "Created",
+                        modifier = Modifier.size(14.dp),
+                        tint = noteColor.copy(alpha = 0.7f)
                     )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = formatDateShort(note.createdAt),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = noteColor.copy(alpha = 0.7f)
+                    )
+                }
+
+                if (note.updatedAt.time != note.createdAt.time) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Updated",
+                            modifier = Modifier.size(14.dp),
+                            tint = noteColor.copy(alpha = 0.7f)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = formatDateShort(note.updatedAt),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = noteColor.copy(alpha = 0.7f)
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-// Функция для форматирования даты
-fun formatDate(date: Date): String {
-    val formatter = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+fun formatDateShort(date: java.util.Date): String {
+    val formatter = java.text.SimpleDateFormat("dd.MM.yy HH:mm", java.util.Locale.getDefault())
     return formatter.format(date)
 }

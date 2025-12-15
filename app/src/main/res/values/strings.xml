@@ -19,5 +19,6 @@
     <string name="light_theme">Светлая</string>
     <string name="dark_theme">Тёмная</string>
     <string name="system_theme">Системная</string>
+    <string name="choose_color">Выбрать цвет</string>
     <string name="app_description">Простое и удобное приложение для создания и управления заметками.</string>
 </resources>
