@@ -8,14 +8,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.noteapp.R
 import com.example.noteapp.data.Note
+import com.example.noteapp.ui.components.EmptyNotesState
 import com.example.noteapp.ui.viewmodel.NoteViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,6 +26,7 @@ fun NoteListScreen(
     onSettingsClick: () -> Unit
 ) {
     val notes by viewModel.notes.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         floatingActionButton = {
@@ -47,40 +48,29 @@ fun NoteListScreen(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-            if (notes.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(stringResource(R.string.no_notes))
-                }
-            } else {
-                LazyColumn {
-                    items(notes) { note ->
-                        NoteItem(
-                            note = note,
-                            onDeleteClick = {
+        if (notes.isEmpty()) {
+            EmptyNotesState(onCreateNote = onCreateNote)
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 8.dp)
+            ) {
+                items(notes) { note ->
+                    NoteItem(
+                        note = note,
+                        onDeleteClick = {
+                            coroutineScope.launch {
                                 viewModel.deleteNoteById(note.id)
-                            },
-                            onEditClick = {
-                                onEditNote(note)
                             }
-                        )
-                    }
+                        },
+                        onEditClick = {
+                            onEditNote(note)
+                        }
+                    )
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun NoteListScreenPreview() {
-    Text("Preview временно отключен")
 }

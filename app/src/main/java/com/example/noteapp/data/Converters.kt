@@ -13,4 +13,14 @@ class Converters {
     fun dateToTimestamp(date: Date?): Long? {
         return date?.time
     }
+
+    @TypeConverter
+    fun fromColorCode(value: String): NoteColor {
+        return NoteColor.fromCode(value)
+    }
+
+    @TypeConverter
+    fun colorToCode(color: NoteColor): String {
+        return color.colorCode
+    }
 }

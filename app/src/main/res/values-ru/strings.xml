@@ -13,11 +13,12 @@
     <string name="russian">Русский</string>
     <string name="english">Английский</string>
     <string name="note_not_found">Заметка не найдена</string>
-    <string name="back">Назад</string>
-    <string name="save">Сохранить</string>
-    <string name="theme">Тема</string>
     <string name="light_theme">Светлая</string>
     <string name="dark_theme">Тёмная</string>
     <string name="system_theme">Системная</string>
-    <string name="app_description">Простое и удобное приложение для создания и управления заметками.</string>
+    <string name="save">Сохранить</string>
+    <string name="back">Назад</string>
+    <string name="app_description">Простое и удобное приложение для создания и управления заметками</string>
+    <string name="theme">Тема</string>
+    <string name="choose_color">Выбрать цвет</string>
 </resources>

@@ -8,8 +8,8 @@ import android.content.Context
 
 @Database(
     entities = [Note::class],
-    version = 1,
-    exportSchema = false  // ИЗМЕНИТЕ на false для упрощения
+    version = 2,  // Увеличиваем версию
+    exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class NoteDatabase : RoomDatabase() {
@@ -25,7 +25,9 @@ abstract class NoteDatabase : RoomDatabase() {
                     context.applicationContext,
                     NoteDatabase::class.java,
                     "note_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()  // Добавляем миграцию
+                    .build()
                 INSTANCE = instance
                 instance
             }

@@ -3,55 +3,52 @@ package com.example.noteapp.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.noteapp.data.Note
+import com.example.noteapp.data.NoteColor
 import com.example.noteapp.data.NoteRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
 
 class NoteViewModel(private val repository: NoteRepository) : ViewModel() {
+    private val _notes = MutableStateFlow<List<Note>>(emptyList())
+    val notes: StateFlow<List<Note>> = _notes.asStateFlow()
 
-    val notes = repository.getAllNotes()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
+    init {
+        loadNotes()
+    }
+
+    private fun loadNotes() {
+        viewModelScope.launch {
+            repository.getAllNotes().collect { notesList ->
+                _notes.value = notesList
+            }
+        }
+    }
+
+    suspend fun insertNote(title: String, content: String, color: NoteColor = NoteColor.DEFAULT) {
+        val note = Note(
+            title = title,
+            content = content,
+            color = color.colorCode
         )
-
-    fun insertNote(title: String, content: String) {
-        viewModelScope.launch {
-            val note = Note(
-                title = title,
-                content = content,
-                createdAt = Date(),
-                updatedAt = Date()
-            )
-            repository.insertNote(note)
-        }
+        repository.insertNote(note)
     }
 
-    fun updateNote(id: Long, title: String, content: String, originalCreatedAt: Date) {
-        viewModelScope.launch {
-            val updatedNote = Note(
-                id = id,
-                title = title,
-                content = content,
-                createdAt = originalCreatedAt, // Сохраняем оригинальную дату создания
-                updatedAt = Date() // Обновляем только дату изменения
-            )
-            repository.updateNote(updatedNote)
-        }
+    suspend fun updateNote(id: Long, title: String, content: String, originalCreatedAt: Date, color: NoteColor) {
+        val note = Note(
+            id = id,
+            title = title,
+            content = content,
+            createdAt = originalCreatedAt,
+            updatedAt = Date(),
+            color = color.colorCode
+        )
+        repository.updateNote(note)
     }
 
-    fun deleteNoteById(id: Long) {
-        viewModelScope.launch {
-            repository.deleteNoteById(id)
-        }
-    }
-
-    fun deleteNote(note: Note) {
-        viewModelScope.launch {
-            repository.deleteNote(note)
-        }
+    suspend fun deleteNoteById(id: Long) {
+        repository.deleteNoteById(id)
     }
 }
